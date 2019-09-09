@@ -62,6 +62,7 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import pagination from './pagination.vue';
 export default {
   data() {
@@ -79,14 +80,6 @@ export default {
   },
   components:{
     pagination
-  },
-  created(){
-    this.favourite = this.$store.state.favourite;
-  },
-  watch:{
-    selectedCity(){
-      this.favourite = this.$store.state.favourite;
-    }
   },
   computed:{
     selectedCity(){
@@ -122,10 +115,18 @@ export default {
       return finalData;
     },
     displayableData(){
-      this.favourite = this.$store.state.app.favourite;
       let start = (this.pageNumber-1)*this.pageSize;
       let end = (this.pageNumber)*this.pageSize;
-      return this.filteredData.slice(start, end);
+
+      let paginatedData = this.filteredData.slice(start, end);
+      for(let i in paginatedData){
+        if(this.$store.state.app.favourite[paginatedData[i].ifsc] === true){
+          Vue.set(this.favourite, paginatedData[i].ifsc, true)
+        } else {
+          Vue.set(this.favourite, paginatedData[i].ifsc, false)
+        }
+      }
+      return paginatedData;
     }
   },
   methods:{
