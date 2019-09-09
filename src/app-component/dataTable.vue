@@ -68,7 +68,7 @@ export default {
     return {
       pageSize: 100,
       pageNumber:1,
-      clickedRow:{}
+      favourite:{}
     }
   },
   props:{
@@ -80,9 +80,20 @@ export default {
   components:{
     pagination
   },
+  created(){
+    this.favourite = this.$store.state.favourite;
+  },
+  watch:{
+    selectedCity(){
+      this.favourite = this.$store.state.favourite;
+    }
+  },
   computed:{
-    favourite(){
-      return this.$store.state.app.favourite;
+    selectedCity(){
+      return this.$store.state.branch.selectedCity;
+    },
+    height(){
+      return this.$store.state.screenHeight - 300;
     },
     branchDataPending(){
       return this.$store.state.branch.branchDataPending;
@@ -111,6 +122,7 @@ export default {
       return finalData;
     },
     displayableData(){
+      this.favourite = this.$store.state.app.favourite;
       let start = (this.pageNumber-1)*this.pageSize;
       let end = (this.pageNumber)*this.pageSize;
       return this.filteredData.slice(start, end);
