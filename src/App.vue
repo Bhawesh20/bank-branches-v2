@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div>
     <h1>
       Bank Branches
     </h1>
