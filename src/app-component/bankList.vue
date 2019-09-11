@@ -15,6 +15,7 @@
 export default {
   created(){
     this.value = this.initalValue;
+    this.changeCity(this.value);
   },
   data(){
     return{

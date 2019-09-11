@@ -4,16 +4,20 @@
     border
     v-loading="branchDataPending"
     :data="displayableData"
+    :height="height"
     style="width: 100%">
-    <el-table-column
-      prop="sr_no"
-      label="S. No."
-      width="100">
-    </el-table-column>
-    <el-table-column
-      prop="bank_id"
-      label="Bank ID"
-      width="100">
+    <el-table-column label="Actions" width="100">
+      <span slot-scope="scope">
+        <span v-if="favourite[scope.row.ifsc] === true" @click="changeCheck(scope.row.ifsc)">
+          <i class="fa fa-heart"></i>
+        </span>
+        <span v-else @click="changeCheck(scope.row.ifsc)">
+          <i class="fa fa-heart-o"></i>
+        </span>
+
+        <!-- <el-checkbox v-model="favourite[scope.row.ifsc]" @change="changeCheck(scope.row.ifsc)"></el-checkbox> -->
+      </span>
+      
     </el-table-column>
     <el-table-column
       prop="bank_name"
@@ -25,6 +29,12 @@
       label="IFSC"
       width="120">
     </el-table-column>
+    <el-table-column
+      prop="bank_id"
+      label="Bank ID"
+      width="100">
+    </el-table-column>
+    
     <el-table-column
       prop="branch"
       label="Branch"
@@ -49,12 +59,6 @@
       prop="address"
       label="Address"
     >
-    </el-table-column>
-    <el-table-column label="Fav" width="50">
-      <span slot-scope="scope">
-        <el-checkbox v-model="favourite[scope.row.ifsc]" @change="changeCheck(scope.row.ifsc)"></el-checkbox>
-      </span>
-      
     </el-table-column>
   </el-table>
   <pagination :page-number="pageNumber" :page-size="pageSize" :total="tableLength" @currentChange="currentChange" @sizeChange="sizeChange"/>
@@ -86,7 +90,7 @@ export default {
       return this.$store.state.branch.selectedCity;
     },
     height(){
-      return this.$store.state.screenHeight - 300;
+      return this.$store.state.app.screenHeight - 200;
     },
     branchDataPending(){
       return this.$store.state.branch.branchDataPending;
@@ -137,13 +141,18 @@ export default {
       this.pageSize = value;
     },
     changeCheck(ifsc){
+      if(this.favourite[ifsc] === true){
+        Vue.set(this.favourite, ifsc, false);
+      } else {
+        Vue.set(this.favourite, ifsc, true);
+      }
       this.$store.commit('setFavourite', {ifsc: ifsc,value: this.favourite[ifsc]});
     },
     filterBySearch(paginatedData){
       let arr = [];
       for(let i in paginatedData){
         for(let key in paginatedData[i]){
-          if((typeof(paginatedData[i][key]) === "string" && paginatedData[i][key].indexOf(this.search) !== -1) ||
+          if((typeof(paginatedData[i][key]) === "string" && paginatedData[i][key].toLowerCase().indexOf(this.search.toLowerCase()) !== -1) ||
             typeof(paginatedData[i][key]) === "number" && paginatedData[i][key] == Number(this.search)
           ) {
             arr.push(paginatedData[i]);

@@ -19,7 +19,6 @@
 
 <script>
 import bankList from '../app-component/bankList.vue';
-import searchBox from '../app-component/searchBox.vue';
 import dataTable from '../app-component/dataTable.vue';
 export default {
   data(){
@@ -30,7 +29,6 @@ export default {
   },
   components:{
     bankList,
-    searchBox,
     dataTable
   },
   computed:{
